@@ -24,6 +24,9 @@ end
 function Terminal:setup(opts)
     self.config = U.create_config(opts)
 
+
+    self.term_opts = opts.term_opts
+
     -- Give every terminal instance their own key
     -- by converting the given cmd into a hex string
     -- This is to be used with autocmd
@@ -129,10 +132,18 @@ function Terminal:create_win(buf)
 end
 
 -- Terminal:term opens a terminal inside a buffer
+--
 function Terminal:term()
     if not self.buf then
         -- This function fails if the current buffer is modified (all buffer contents are destroyed).
-        local pid = fn.termopen(self.config.cmd)
+        local pid = 0
+        if not self.term_opts then
+            pid = fn.termopen(self.config.cmd)
+        else
+            pid = fn.termopen(self.config.cmd, self.term_opts)
+        end
+
+
 
         -- IDK what to do with this now, maybe later we can use it
         self.terminal = pid
