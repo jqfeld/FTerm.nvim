@@ -1,5 +1,9 @@
 <h1 align='center'>FTerm.nvim</h1>
 
+My fork of numToStr's [FTerm](https://github.com/numToStr/FTerm.nvim).
+I did some small modifications to fit my needs (e.g. allowing to use [nnn](https://github.com/jarun/nnn)
+as file explorer, see below).
+
 <h4 align='center'>🔥 No nonsense floating terminal written in lua 🔥</h4>
 
 ![FTerm](https://user-images.githubusercontent.com/24727447/113905276-999bc580-97f0-11eb-9c01-347de0ff53c9.png "FTerm floating in the wind")
@@ -130,6 +134,43 @@ end
 
 Screenshot
 ![bpytop](https://user-images.githubusercontent.com/24727447/115376384-47917180-a1ec-11eb-9717-8dbf21465428.png "bpytop in floating terminal")
+
+-    Running [nnn](https://github.com/jarun/nnn) to open files
+```lua
+local term = require("FTerm.terminal")
+
+local M = {}
+
+local last_line = "last_line"
+
+-- Return true if file exists and is readable.
+function file_exists(path)
+  local file = io.open(path, "rb")
+  if file then file:close() end
+  return file ~= nil
+end
+
+local nnn = term:new():setup({
+    cmd = "nnn -p /tmp/nvim_fterm_nnn_pick",
+    term_opts = {
+        on_exit = function(id, data, event)
+            if file_exists("/tmp/nvim_fterm_nnn_pick") then
+                vim.cmd("e "..vim.fn.readfile("/tmp/nvim_fterm_nnn_pick")[1])
+            end
+        end
+
+        }
+})
+
+
+
+function M.nnn_toggle()
+    return nnn:toggle()
+end
+
+return M
+```
+
 
 ### Credits
 
