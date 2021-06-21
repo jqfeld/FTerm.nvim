@@ -26,6 +26,7 @@ function Terminal:setup(opts)
 
 
     self.term_opts = opts.term_opts
+    self.filetype = opts.filetype or "FTerm"
 
     -- Give every terminal instance their own key
     -- by converting the given cmd into a hex string
@@ -126,7 +127,8 @@ function Terminal:create_win(buf)
 
     -- Setting filetype in `create_win()` instead of `create_buf()` because window options
     -- such as `winhl`, `winblend` should be available after the window is created.
-    api.nvim_buf_set_option(buf, "filetype", "FTerm")
+    api.nvim_buf_set_option(buf, "filetype", self.filetype)
+    -- api.nvim_buf_set_option(buf, "filetype", "FTerm")
 
     return win
 end
